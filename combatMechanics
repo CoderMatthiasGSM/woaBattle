@@ -1,0 +1,76 @@
+const Discord = require("discord.js")
+const Database = require("@replit/database")
+const { MessageEmbed } = require('discord.js')
+const disbut = require("discord-buttons")
+
+
+const db = new Database()
+const client = new Discord.Client()
+disbut(client)
+const { MessageButton, MessageActionRow } = require('discord-buttons')
+
+const exampleEmbed = new MessageEmbed()
+	.setColor('#0099ff')
+	.setTitle('Tavern Brawl🍺')
+	.setURL('https://warriorsofaradena.com')
+	.setAuthor('', 'https://imgur.com/PPzYRXX.png', '')
+	.setDescription('The ale has flown and now the battle is upon us')
+	.addFields(
+		{ name: 'Drunken health', value: '100 HP💓' },
+		{ name: 'Inline field title', value: 'Some value here', inline: true },
+		{ name: 'Inline field title', value: 'Some value here', inline: true },
+	)
+
+client.on("ready", () => {
+  console.log(`Logged in as ${client.user.tag}!`)
+})
+
+client.on("message", msg => {
+  if (msg.author.bot) return
+
+  if (msg.content.startsWith("$battle")) {
+    let author = msg.author
+    let enemy = msg.mentions.users.first()
+    console.log(`A battle has started between ${enemy} & ${author}!`)
+    msg.channel.send("Is it time?")
+
+    if (!enemy) {
+      msg.channel.send("You need to provide a valid user ID or name to fight against. It is not yet your time!")
+    }
+    else if (enemy.id === author.id) {
+      msg.channel.send("You can\'t fight urself.  It is not yet the time")
+    }
+    else if (enemy.bot) {
+      msg.channel.send("You can\'t fight against the tavern is this kingdom.  The alehouse always wins!")
+    }
+    else {
+      msg.channel.send(`Sharpen your swords! May the gods of war shine upon thee ${author} & ${enemy}`)
+
+  const button = new MessageButton()
+    .setLabel("Stab")
+    .setStyle("green")
+    .setID("btn1")
+
+    const button2 = new MessageButton()
+    .setLabel("Punch")
+    .setStyle("red")
+    .setID("btn2")
+
+    const button3 = new MessageButton()
+    .setLabel("Kick")
+    .setStyle("blurple")
+    .setID("btn3")
+
+    msg.channel.send(exampleEmbed, {
+      buttons: [button, button2, button3]
+    })
+
+
+    }
+
+
+  }
+
+})
+
+client.login(process.env.TOKEN)
